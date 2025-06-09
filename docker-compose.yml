@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  docusaurus:
+    container_name: qrion-docs
+    image: node:18
+    working_dir: /app
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./:/app
+    command: sh -c "npm install && npm run start"
