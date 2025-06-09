@@ -693,6 +693,196 @@ API ini menggunakan kode status HTTP standar untuk menunjukkan keberhasilan atau
 
 ---
 
+Baik, saya paham sekarang. Anda ingin teks dokumentasi API Kalender QMS Qrion yang sudah saya berikan sebelumnya, tetapi dalam format Markdown (`.md`) murni, tanpa dibungkus dalam tag `<immersive>` atau instruksi tambahan lainnya yang ditujukan untuk _canvas_.
+
+Berikut adalah teks lengkapnya dalam format Markdown murni yang siap Anda salin ke file `.md` Anda:
+
+````markdown
+# Dokumentasi API Kalender QMS Qrion
+
+Dokumen ini menjelaskan _endpoint_ API untuk mengelola acara kalender dalam modul Quality Management System (QMS) Qrion. Anda dapat membuat, memperbarui, melihat, dan mengelola acara kalender.
+
+## URL Dasar
+
+Untuk _endpoint_ Kalender, URL dasar yang digunakan adalah:
+
+`http://localhost:3003/api/v1`
+
+## Otentikasi
+
+Semua _endpoint_ Kalender memerlukan otentikasi menggunakan **Bearer Token**. Pastikan Anda menyertakan _header_ `Authorization` dengan format `Bearer <YOUR_ACCESS_TOKEN>` dalam setiap permintaan yang diautentikasi. Token akses ini diperoleh setelah berhasil login ke sistem Qrion.
+
+---
+
+## Endpoint Kalender
+
+### 1. Membuat Acara Kalender Baru (`/calendar-events`)
+
+Menyimpan acara kalender baru ke dalam sistem.
+
+- **URL:** `http://localhost:3003/api/v1/calendar-events`
+- **Metode:** `POST`
+- **Content-Type:** `application/json`
+- **Otorisasi:** `Bearer Token`
+
+**Contoh Body Request (JSON):**
+
+```json
+{
+  "title": "Project Meeting",
+  "start": "2025-06-03T10:00:00",
+  "end": "2025-06-03T11:30:00",
+  "type": "meeting",
+  "backgroundColor": "#1890ff"
+}
+```
+````
+
+**Detail Properti Request:**
+
+| Properti          | Tipe   | Deskripsi                                                           |
+| :---------------- | :----- | :------------------------------------------------------------------ |
+| `title`           | String | Judul acara kalender.                                               |
+| `start`           | String | Waktu mulai acara (format ISO 8601, contoh: `YYYY-MM-DDTHH:mm:ss`). |
+| `end`             | String | Waktu berakhir acara (format ISO 8601).                             |
+| `type`            | String | Tipe acara (misalnya: "meeting", "task", "holiday").                |
+| `backgroundColor` | String | Warna latar belakang acara (format Hex, contoh: "#RRGGBB").         |
+
+**Contoh Body Response Sukses (Status: `201 Created`):**
+
+```json
+{
+  "message": "Calendar event created successfully",
+  "data": {
+    "title": "Project Meeting",
+    "start": "2025-06-03T10:00:00",
+    "end": "2025-06-03T11:30:00",
+    "type": "meeting",
+    "institution_id": 1,
+    "user_id": 5,
+    "backgroundColor": "#1890ff"
+  }
+}
+```
+
+### 2. Memperbarui Acara Kalender (`/calendar-events/<id>`)
+
+Memperbarui detail acara kalender yang sudah ada.
+
+- **URL:** `http://localhost:3003/api/v1/calendar-events/<id_acara>` (Ganti `<id_acara>` dengan ID numerik acara yang ingin diperbarui, contoh: `http://localhost:3003/api/v1/calendar-events/1`)
+- **Metode:** `POST` (Catatan: Meskipun `POST` digunakan di Postman, untuk operasi _update_ biasanya `PUT` atau `PATCH` lebih RESTful. Konfirmasikan dengan implementasi API.)
+- **Content-Type:** `application/json`
+- **Otorisasi:** `Bearer Token`
+
+**Contoh Body Request (JSON):**
+
+```json
+{
+  "title": "Project Meeting x",
+  "start": "2025-06-03T10:00:00",
+  "end": "2025-06-03T11:30:00",
+  "type": "meeting",
+  "backgroundColor": "#1890ff"
+}
+```
+
+**Detail Properti Request:**
+Sama dengan properti saat membuat acara, Anda hanya perlu mengirim properti yang ingin Anda ubah.
+
+**Contoh Body Response Sukses (Status: `200 OK`):**
+
+```json
+{
+  "message": "Calendar event updated successfully",
+  "data": {
+    "id": 1,
+    "uuid": "20f61cd3-b8fc-42b2-8b62-6c734fd7cb57",
+    "title": "Project Meeting x",
+    "start": "2025-06-03T03:00:00.000Z",
+    "end": "2025-06-03T04:30:00.000Z",
+    "type": "meeting",
+    "institution_id": 1,
+    "user_id": 5,
+    "backgroundColor": "#1890ff",
+    "created_at": "2025-06-09T07:35:09.114Z",
+    "updated_at": "2025-06-09T07:36:53.812Z"
+  }
+}
+```
+
+### 3. Menampilkan Semua Acara Kalender Berdasarkan Autentikasi (`/calendar-events`)
+
+Mengambil daftar semua acara kalender yang terkait dengan pengguna yang sedang login (berdasarkan token autentikasi).
+
+- **URL:** `http://localhost:3003/api/v1/calendar-events`
+- **Metode:** `GET`
+- **Otorisasi:** `Bearer Token`
+- **Parameter Query:** Tidak ada.
+
+**Contoh Body Response Sukses (Status: `200 OK`):**
+
+```json
+[
+  {
+    "id": 1,
+    "uuid": "20f61cd3-b8fc-42b2-8b62-6c734fd7cb57",
+    "title": "Project Meeting x",
+    "start": "2025-06-03T03:00:00.000Z",
+    "end": "2025-06-03T04:30:00.000Z",
+    "type": "meeting",
+    "institution_id": 1,
+    "user_id": 5,
+    "backgroundColor": "#1890ff",
+    "created_at": "2025-06-09T07:35:09.114Z",
+    "updated_at": "2025-06-09T07:36:53.812Z"
+  }
+  // ... acara kalender lainnya
+]
+```
+
+### 4. Mendapatkan Acara Kalender Berdasarkan ID (`/calendar-events/<id>`)
+
+Mengambil detail acara kalender spesifik berdasarkan ID-nya.
+
+- **URL:** `http://localhost:3003/api/v1/calendar-events/<id_acara>` (Ganti `<id_acara>` dengan ID numerik acara yang ingin diambil, contoh: `http://localhost:3003/api/v1/calendar-events/1`)
+- **Metode:** `GET`
+- **Otorisasi:** `Bearer Token`
+- **Parameter Query:** Tidak ada.
+
+**Contoh Body Response Sukses (Status: `200 OK`):**
+
+```json
+{
+  "id": 1,
+  "uuid": "20f61cd3-b8fc-42b2-8b62-6c734fd7cb57",
+  "title": "Project Meeting x",
+  "start": "2025-06-03T03:00:00.000Z",
+  "end": "2025-06-03T04:30:00.000Z",
+  "type": "meeting",
+  "institution_id": 1,
+  "user_id": 5,
+  "backgroundColor": "#1890ff",
+  "created_at": "2025-06-09T07:35:09.114Z",
+  "updated_at": "2025-06-09T07:36:53.812Z"
+}
+```
+
+---
+
+## Penanganan Kesalahan Umum
+
+API ini menggunakan kode status HTTP standar untuk menunjukkan keberhasilan atau kegagalan permintaan API. Berikut adalah beberapa respons kesalahan umum yang mungkin Anda temui:
+
+- **`200 OK`**: Permintaan berhasil diproses.
+- **`201 Created`**: Sumber daya baru berhasil dibuat.
+- **`400 Bad Request`**: Permintaan tidak valid, parameter hilang, atau format tidak sesuai. Periksa _body request_ dan parameter Anda.
+- **`401 Unauthorized`**: Otentikasi diperlukan atau gagal (misalnya, token akses tidak ada, tidak valid, atau kedaluwarsa). Pastikan Anda mengirim token Bearer yang benar.
+- **`403 Forbidden`**: Pengguna yang terautentikasi tidak memiliki izin yang cukup untuk mengakses sumber daya ini atau melakukan tindakan ini.
+- **`404 Not Found`**: Sumber daya yang diminta tidak ditemukan di server (misalnya, ID acara kalender tidak valid).
+- **`500 Internal Server Error`**: Terjadi kesalahan tak terduga di sisi server. Hubungi administrator sistem jika masalah ini berlanjut.
+
+---
+
 Untuk pertanyaan atau bantuan lebih lanjut, silakan hubungi tim dukungan teknis Qrion.
 
 **Terima kasih telah menggunakan API Qrion!**
