@@ -1,0 +1,8 @@
+{
+  "label": "Qrion Management System API",
+  "position": 4,
+  "link": {
+    "type": "generated-index",
+    "description": "The Qrion Management System API provides a comprehensive set of endpoints for managing and interacting with the Qrion platform. This includes user management, project management, and various other functionalities that allow developers to integrate and extend the capabilities of Qrion."
+  }
+}
